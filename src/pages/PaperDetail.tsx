@@ -87,7 +87,7 @@ const PaperDetail: React.FC = () => {
         {paper.authors.join(', ')} • {paper.year} • {paper.journal}
       </p>
       
-      <div className="flex gap-2 mb-6">
+      <div className={`flex gap-2 mb-6 ${language === 'fa' ? 'flex-row-reverse' : ''}`}>
         <Button variant="outline">
           {t('paper.chat')}
         </Button>
@@ -117,17 +117,17 @@ const PaperDetail: React.FC = () => {
       </div>
       
       <Tabs defaultValue="abstract" className="mb-6">
-        <TabsList>
+        <TabsList className={language === 'fa' ? 'flex-row-reverse' : ''}>
           <TabsTrigger value="abstract">{t('paper.abstract')}</TabsTrigger>
           <TabsTrigger value="summary">{t('paper.aiSummary')}</TabsTrigger>
         </TabsList>
         <TabsContent value="abstract" className="mt-4">
-          <div className="bg-white p-4 rounded-md shadow">
+          <div className={`bg-white p-4 rounded-md shadow ${language === 'fa' ? 'farsi' : ''}`}>
             <p>{paper.abstract[language]}</p>
           </div>
         </TabsContent>
         <TabsContent value="summary" className="mt-4">
-          <div className="bg-white p-4 rounded-md shadow">
+          <div className={`bg-white p-4 rounded-md shadow ${language === 'fa' ? 'farsi' : ''}`}>
             <p>{paper.aiSummary?.[language]}</p>
           </div>
         </TabsContent>

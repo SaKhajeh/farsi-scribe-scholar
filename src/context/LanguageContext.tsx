@@ -37,6 +37,12 @@ export const translations = {
     'review.regenerate': 'Regenerate',
     'review.refine': 'Refine',
     'review.translate': 'Translate',
+    'review.promptBased': 'Prompt-based Generation',
+    'review.addPapers': 'Add Key Papers',
+    'review.researchTopic': 'Research Topic or Question',
+    'review.enterTopic': 'Enter your research question or topic...',
+    'review.paperTitle': 'Enter paper title or DOI...',
+    'review.remove': 'Remove',
   },
   fa: {
     'app.title': 'دستیار تحقیقاتی دو زبانه',
@@ -60,6 +66,12 @@ export const translations = {
     'review.regenerate': 'ایجاد مجدد',
     'review.refine': 'پالایش',
     'review.translate': 'ترجمه',
+    'review.promptBased': 'ایجاد بر اساس پرامپت',
+    'review.addPapers': 'افزودن مقالات کلیدی',
+    'review.researchTopic': 'موضوع یا سؤال تحقیق',
+    'review.enterTopic': 'موضوع یا سؤال تحقیق خود را وارد کنید...',
+    'review.paperTitle': 'عنوان مقاله یا DOI را وارد کنید...',
+    'review.remove': 'حذف',
   },
 };
 
