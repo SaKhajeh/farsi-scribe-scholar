@@ -20,7 +20,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
   
   return (
-    <form onSubmit={handleSearch} className="mb-6 space-y-3">
+    <form onSubmit={handleSearch} className="mb-2 space-y-3">
       <div className="flex gap-2">
         <Input
           type="text"
