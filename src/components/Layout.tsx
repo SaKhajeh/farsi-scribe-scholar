@@ -1,22 +1,30 @@
 
 import React from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
 import Navigation from './Navigation';
 import AuthButton from './AuthButton';
 import { useLanguage } from '@/context/LanguageContext';
 
 const Layout: React.FC = () => {
   const { language } = useLanguage();
+  const navigate = useNavigate();
+  
+  const handleTitleClick = () => {
+    navigate('/');
+  };
   
   return (
     <div className={`min-h-screen bg-research-light ${language === 'fa' ? 'farsi' : ''}`}>
       <header className="bg-research-primary text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
-          <Link to="/" className={`text-2xl font-serif font-bold hover:text-research-accent transition-colors ${language === 'fa' ? 'farsi' : ''}`}>
+          <button 
+            onClick={handleTitleClick} 
+            className={`text-2xl font-serif font-bold hover:text-research-accent transition-colors ${language === 'fa' ? 'farsi' : ''}`}
+          >
             {language === 'en' 
               ? "Paiper Research Assistant"
               : "پایپر: دستیار پژوهشی"}
-          </Link>
+          </button>
           <AuthButton />
         </div>
       </header>

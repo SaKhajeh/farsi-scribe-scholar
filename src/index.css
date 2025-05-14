@@ -59,10 +59,16 @@
 /* Farsi text direction */
 .farsi {
   direction: rtl;
-  font-family: 'Vazirmatn', sans-serif;
+  font-family: 'IRANSans', 'Vazirmatn', sans-serif;
   text-align: right;
 }
 
-/* Add Vazirmatn font for Farsi text */
+/* Add Vazirmatn and IRANSans fonts for Farsi text */
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/iran-sans@latest/dist/font-face.css');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Library card styling */
+.library-card {
+  @apply border-blue-500 shadow-sm hover:shadow-md transition-shadow;
+}

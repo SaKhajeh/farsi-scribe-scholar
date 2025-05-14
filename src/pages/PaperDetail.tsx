@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLanguage } from '@/context/LanguageContext';
+import { useAuth } from '@/context/AuthContext';
 import { getPaperById, getLibraries, addPaperToLibrary } from '@/services/paperService';
 import { Paper, Library } from '@/types';
 import {
@@ -13,6 +14,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { toast } from "sonner";
 
 const PaperDetail: React.FC = () => {
@@ -21,6 +28,7 @@ const PaperDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [libraries, setLibraries] = useState<Library[]>([]);
   const { language, t } = useLanguage();
+  const { isAuthenticated } = useAuth();
   
   useEffect(() => {
     const fetchPaper = async () => {
@@ -31,8 +39,11 @@ const PaperDetail: React.FC = () => {
         if (paperData) {
           setPaper(paperData);
         }
-        const librariesData = await getLibraries();
-        setLibraries(librariesData);
+        
+        if (isAuthenticated) {
+          const librariesData = await getLibraries();
+          setLibraries(librariesData);
+        }
       } catch (error) {
         console.error('Error fetching paper:', error);
       } finally {
@@ -41,10 +52,10 @@ const PaperDetail: React.FC = () => {
     };
     
     fetchPaper();
-  }, [id]);
+  }, [id, isAuthenticated]);
   
   const handleAddToLibrary = async (libraryId: string) => {
-    if (!id) return;
+    if (!id || !isAuthenticated) return;
     
     try {
       const success = await addPaperToLibrary(libraryId, id);
@@ -59,6 +70,27 @@ const PaperDetail: React.FC = () => {
         ? "Failed to add paper to library" 
         : "افزودن مقاله به کتابخانه با مشکل مواجه شد");
     }
+  };
+  
+  const renderAuthRequiredButton = (children: React.ReactNode, tooltipText: string) => {
+    if (isAuthenticated) {
+      return children;
+    }
+    
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="outline" disabled>
+              {tooltipText}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{language === 'en' ? 'Please sign in to access this feature' : 'لطفا برای دسترسی به این امکان وارد شوید'}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
   };
   
   if (loading) {
@@ -88,38 +120,45 @@ const PaperDetail: React.FC = () => {
       </p>
       
       <div className={`flex gap-2 mb-6 ${language === 'fa' ? 'flex-row-reverse' : ''}`}>
-        <Button variant="outline">
-          {t('paper.chat')}
-        </Button>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button>
-              {t('paper.addToLibrary')}
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{language === 'en' ? 'Select a Library' : 'کتابخانه را انتخاب کنید'}</DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              {libraries.map((library) => (
-                <Button 
-                  key={library.id} 
-                  variant="outline" 
-                  onClick={() => handleAddToLibrary(library.id)}
-                >
-                  {library.name}
-                </Button>
-              ))}
-            </div>
-          </DialogContent>
-        </Dialog>
+        {renderAuthRequiredButton(
+          <Button variant="outline">
+            {t('paper.chat')}
+          </Button>,
+          t('paper.chat')
+        )}
+        
+        {renderAuthRequiredButton(
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>
+                {t('paper.addToLibrary')}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-white">
+              <DialogHeader>
+                <DialogTitle>{language === 'en' ? 'Select a Library' : 'کتابخانه را انتخاب کنید'}</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                {libraries.map((library) => (
+                  <Button 
+                    key={library.id} 
+                    variant="outline" 
+                    onClick={() => handleAddToLibrary(library.id)}
+                  >
+                    {library.name}
+                  </Button>
+                ))}
+              </div>
+            </DialogContent>
+          </Dialog>,
+          t('paper.addToLibrary')
+        )}
       </div>
       
       <Tabs defaultValue="abstract" className="mb-6">
         <TabsList className={language === 'fa' ? 'flex-row-reverse' : ''}>
           <TabsTrigger value="abstract">{t('paper.abstract')}</TabsTrigger>
-          <TabsTrigger value="summary">{t('paper.aiSummary')}</TabsTrigger>
+          <TabsTrigger value="summary" disabled={!isAuthenticated}>{t('paper.aiSummary')}</TabsTrigger>
         </TabsList>
         <TabsContent value="abstract" className="mt-4">
           <div className={`bg-white p-4 rounded-md shadow ${language === 'fa' ? 'farsi' : ''}`}>
@@ -128,7 +167,15 @@ const PaperDetail: React.FC = () => {
         </TabsContent>
         <TabsContent value="summary" className="mt-4">
           <div className={`bg-white p-4 rounded-md shadow ${language === 'fa' ? 'farsi' : ''}`}>
-            <p>{paper.aiSummary?.[language]}</p>
+            {isAuthenticated ? (
+              <p>{paper.aiSummary?.[language]}</p>
+            ) : (
+              <p className="text-center text-gray-500">
+                {language === 'en' 
+                  ? 'Please sign in to view AI summary' 
+                  : 'لطفا برای مشاهده خلاصه هوش مصنوعی وارد شوید'}
+              </p>
+            )}
           </div>
         </TabsContent>
       </Tabs>

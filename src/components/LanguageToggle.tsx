@@ -1,22 +1,33 @@
 
 import React from 'react';
-import { Toggle } from '@/components/ui/toggle';
+import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/LanguageContext';
 
 const LanguageToggle: React.FC = () => {
   const { language, toggleLanguage, t } = useLanguage();
   
   return (
-    <Toggle
-      aria-label="Toggle Language"
-      pressed={language === 'fa'}
-      onPressedChange={toggleLanguage}
-      className="flex items-center gap-1 px-3"
-    >
-      {language === 'en' 
-        ? <span>🇬🇧 {t('language.english')}</span> 
-        : <span>🇮🇷 {t('language.farsi')}</span>}
-    </Toggle>
+    <div className="flex items-center space-x-2">
+      <Button
+        type="button"
+        variant={language === 'en' ? 'default' : 'outline'}
+        className={`px-3 py-1 ${language === 'en' ? 'bg-green-500 hover:bg-green-600' : 'text-gray-600'}`}
+        onClick={() => language !== 'en' && toggleLanguage()}
+        size="sm"
+      >
+        🇬🇧 {t('language.english')}
+      </Button>
+      
+      <Button
+        type="button"
+        variant={language === 'fa' ? 'default' : 'outline'}
+        className={`px-3 py-1 ${language === 'fa' ? 'bg-green-500 hover:bg-green-600' : 'text-gray-600'}`}
+        onClick={() => language !== 'fa' && toggleLanguage()}
+        size="sm"
+      >
+        🇮🇷 {t('language.farsi')}
+      </Button>
+    </div>
   );
 };
 
