@@ -39,7 +39,7 @@ const AuthButton: React.FC = () => {
             className="text-destructive focus:text-destructive"
           >
             <LogOut className="mr-2 h-4 w-4" />
-            <span>{t('auth.logout')}</span>
+            <span>{t('auth.signOut')}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -53,7 +53,7 @@ const AuthButton: React.FC = () => {
       className="flex items-center gap-2"
     >
       <LogIn size={16} />
-      <span>{t('auth.login')}</span>
+      <span>{t('auth.signIn')}</span>
     </Button>
   );
 };

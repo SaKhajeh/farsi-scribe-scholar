@@ -56,7 +56,7 @@ const AuthPage: React.FC = () => {
   return (
     <div className={`max-w-md mx-auto mt-12 p-8 rounded-lg shadow-md bg-white ${language === 'fa' ? 'farsi' : ''}`}>
       <h1 className={`text-2xl font-bold mb-6 text-center ${language === 'fa' ? 'farsi' : ''}`}>
-        {isLogin ? t('auth.login') : t('auth.signup')}
+        {isLogin ? t('auth.signIn') : t('auth.signUp')}
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -111,7 +111,7 @@ const AuthPage: React.FC = () => {
         >
           {isSubmitting ? 
             t('auth.processing') : 
-            isLogin ? t('auth.login') : t('auth.signup')
+            isLogin ? t('auth.signIn') : t('auth.signUp')
           }
         </Button>
       </form>

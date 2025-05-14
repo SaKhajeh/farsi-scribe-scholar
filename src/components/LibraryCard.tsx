@@ -13,7 +13,7 @@ const LibraryCard: React.FC<LibraryCardProps> = ({ library }) => {
   
   return (
     <Card 
-      className="mb-4 hover:shadow-lg transition-shadow cursor-pointer"
+      className="mb-4 hover:shadow-lg transition-shadow cursor-pointer border-2 border-research-secondary bg-white/80"
       onClick={() => navigate(`/libraries/${library.id}`)}
     >
       <CardContent className="pt-6">
