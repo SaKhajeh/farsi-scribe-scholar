@@ -44,8 +44,7 @@ const AuthButton: React.FC = () => {
           variant="default"
           className="bg-sky-500 hover:bg-sky-600 text-white flex items-center gap-2"
         >
-          <LogIn size={16} />
-          <span>{t('auth.signIn')}</span>
+          {t('auth.getStarted')}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48 bg-white">
