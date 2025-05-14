@@ -20,7 +20,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { Copy } from 'lucide-react';
 
 const PaperDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -72,6 +79,37 @@ const PaperDetail: React.FC = () => {
     }
   };
   
+  // Format citations in different styles
+  const formatCitation = (style: 'apa' | 'mla' | 'ieee') => {
+    if (!paper) return '';
+    
+    const authors = paper.authors.join(', ');
+    const title = paper.title.en || paper.title.fa;
+    const year = paper.year;
+    const journal = paper.journal || '';
+    const doi = paper.doi ? `DOI: ${paper.doi}` : '';
+    
+    switch (style) {
+      case 'apa':
+        return `${authors}. (${year}). ${title}. ${journal}. ${doi}`;
+      case 'mla':
+        return `${authors}. "${title}." ${journal}, ${year}. ${doi}`;
+      case 'ieee':
+        return `${authors}, "${title}," ${journal}, ${year}. ${doi}`;
+      default:
+        return `${authors}. (${year}). ${title}. ${journal}. ${doi}`;
+    }
+  };
+  
+  const copyToClipboard = (style: 'apa' | 'mla' | 'ieee') => {
+    const citation = formatCitation(style);
+    navigator.clipboard.writeText(citation).then(() => {
+      toast.success(language === 'en' 
+        ? `${style.toUpperCase()} citation copied` 
+        : `نقل قول ${style.toUpperCase()} کپی شد`);
+    });
+  };
+  
   const renderAuthRequiredButton = (children: React.ReactNode, tooltipText: string) => {
     if (isAuthenticated) {
       return children;
@@ -107,7 +145,29 @@ const PaperDetail: React.FC = () => {
   
   return (
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-2">{paper.title[language]}</h1>
+      <div className="flex justify-between items-start mb-2">
+        <h1 className="text-2xl font-semibold">{paper.title[language]}</h1>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Copy size={16} className="mr-2" />
+              {language === 'en' ? 'Cite' : 'استناد'}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem onClick={() => copyToClipboard('apa')}>
+              APA
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => copyToClipboard('mla')}>
+              MLA
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => copyToClipboard('ieee')}>
+              IEEE
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      
       {language === 'en' && (
         <p className="text-gray-600 mb-4 farsi">{paper.title.fa}</p>
       )}
