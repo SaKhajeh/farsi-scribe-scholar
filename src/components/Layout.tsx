@@ -2,6 +2,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navigation from './Navigation';
+import AuthButton from './AuthButton';
 import { useLanguage } from '@/context/LanguageContext';
 
 const Layout: React.FC = () => {
@@ -16,6 +17,7 @@ const Layout: React.FC = () => {
               ? "Paiper Research Assistant"
               : "پایپر: دستیار پژوهشی"}
           </h1>
+          <AuthButton />
         </div>
       </header>
       <main className="container mx-auto p-4 pb-24">
