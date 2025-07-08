@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import RichTextEditor from '@/components/RichTextEditor';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsContent, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -269,11 +270,11 @@ const LiteratureReviewPage: React.FC = () => {
       {review && (
         <div className="mt-8">
           <h2 className="text-xl font-semibold mb-4">{review.title}</h2>
-          <div className={`bg-white p-6 rounded-lg shadow-sm mb-4 ${language === 'fa' ? 'farsi' : ''}`}>
-            <Textarea
-              value={review.content}
-              onChange={(e) => setReview({...review, content: e.target.value})}
-              className={`min-h-[300px] ${language === 'fa' ? 'farsi' : ''}`}
+          <div className={`bg-white rounded-lg shadow-sm mb-4 ${language === 'fa' ? 'farsi' : ''}`}>
+            <RichTextEditor
+              content={review.content}
+              onChange={(content) => setReview({...review, content})}
+              className="min-h-[400px]"
             />
           </div>
           <div className={`flex gap-2 ${language === 'fa' ? 'flex-row-reverse' : ''}`}>
