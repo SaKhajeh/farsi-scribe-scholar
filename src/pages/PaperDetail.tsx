@@ -27,7 +27,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { Copy } from 'lucide-react';
+import { Copy, MessageSquare } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const PaperDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,6 +37,7 @@ const PaperDetail: React.FC = () => {
   const [libraries, setLibraries] = useState<Library[]>([]);
   const { language, t } = useLanguage();
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   
   useEffect(() => {
     const fetchPaper = async () => {
@@ -181,7 +183,11 @@ const PaperDetail: React.FC = () => {
       
       <div className={`flex gap-2 mb-6 ${language === 'fa' ? 'flex-row-reverse' : ''}`}>
         {renderAuthRequiredButton(
-          <Button variant="outline">
+          <Button 
+            variant="outline"
+            onClick={() => navigate(`/chat-pdf?paperId=${paper.id}`)}
+          >
+            <MessageSquare size={16} className="mr-2" />
             {t('paper.chat')}
           </Button>,
           t('paper.chat')

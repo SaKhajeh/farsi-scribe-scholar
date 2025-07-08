@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Paper } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import { Copy } from 'lucide-react';
+import { Copy, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -82,26 +82,38 @@ const PaperCard: React.FC<PaperCardProps> = ({ paper }) => {
               {paper.authors.join(', ')}
             </p>
           </div>
-          <div className="citation-dropdown" onClick={(e) => e.stopPropagation()}>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Copy size={14} className="mr-1" />
-                  {language === 'en' ? 'Cite' : 'استناد'}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onClick={() => copyToClipboard('apa')}>
-                  APA
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => copyToClipboard('mla')}>
-                  MLA
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => copyToClipboard('ieee')}>
-                  IEEE
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="flex gap-2">
+            <div className="citation-dropdown" onClick={(e) => e.stopPropagation()}>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate(`/chat-pdf?paperId=${paper.id}`)}
+              >
+                <MessageSquare size={14} className="mr-1" />
+                {language === 'en' ? 'Chat' : 'چت'}
+              </Button>
+            </div>
+            <div className="citation-dropdown" onClick={(e) => e.stopPropagation()}>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Copy size={14} className="mr-1" />
+                    {language === 'en' ? 'Cite' : 'استناد'}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => copyToClipboard('apa')}>
+                    APA
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => copyToClipboard('mla')}>
+                    MLA
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => copyToClipboard('ieee')}>
+                    IEEE
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
       </CardContent>

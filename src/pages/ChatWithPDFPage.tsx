@@ -1,7 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
+import { useSearchParams } from 'react-router-dom';
+import { getPaperById } from '@/services/paperService';
+import { Paper } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -23,13 +26,40 @@ interface ChatMessage {
 const ChatWithPDFPage: React.FC = () => {
   const { language } = useLanguage();
   const { isAuthenticated } = useAuth();
+  const [searchParams] = useSearchParams();
+  const paperId = searchParams.get('paperId');
+  
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [selectedPaper, setSelectedPaper] = useState<Paper | null>(null);
+  const [loading, setLoading] = useState(!!paperId);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages] = useState(10); // Mock data
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedText, setSelectedText] = useState('');
+  
+  useEffect(() => {
+    const fetchPaper = async () => {
+      if (!paperId) {
+        setLoading(false);
+        return;
+      }
+      
+      try {
+        const paperData = await getPaperById(paperId);
+        if (paperData) {
+          setSelectedPaper(paperData);
+        }
+      } catch (error) {
+        console.error('Error fetching paper:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchPaper();
+  }, [paperId]);
   
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -105,7 +135,12 @@ const ChatWithPDFPage: React.FC = () => {
           <div className="flex items-center gap-4">
             <FileText className="w-6 h-6 text-primary" />
             <h1 className="text-lg font-semibold">
-              {pdfFile ? pdfFile.name : (language === 'en' ? 'Chat with PDF' : 'چت با PDF')}
+              {selectedPaper 
+                ? (selectedPaper.title[language] || selectedPaper.title.en || selectedPaper.title.fa)
+                : pdfFile 
+                  ? pdfFile.name 
+                  : (language === 'en' ? 'Chat with PDF' : 'چت با PDF')
+              }
             </h1>
           </div>
           <div className="flex items-center gap-2">
@@ -120,7 +155,7 @@ const ChatWithPDFPage: React.FC = () => {
               className="hidden"
               onChange={handleFileUpload}
             />
-            {pdfFile && (
+            {(pdfFile || selectedPaper) && (
               <>
                 <Button variant="outline" size="sm">
                   <Download className="w-4 h-4 mr-2" />
@@ -136,7 +171,14 @@ const ChatWithPDFPage: React.FC = () => {
         </div>
       </div>
       
-      {!pdfFile ? (
+      {loading ? (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p>{language === 'en' ? 'Loading paper...' : 'در حال بارگذاری مقاله...'}</p>
+          </div>
+        </div>
+      ) : !pdfFile && !selectedPaper ? (
         /* Upload State */
         <div className="flex-1 flex items-center justify-center">
           <Card className="p-12 text-center max-w-md">
@@ -210,16 +252,33 @@ const ChatWithPDFPage: React.FC = () => {
                     onMouseUp={handleTextSelection}
                   >
                     <div className="space-y-4 text-left max-w-2xl">
-                      <h3 className="text-lg font-semibold">Sample PDF Content</h3>
-                      <p className="text-sm leading-relaxed">
-                        This is a mock PDF viewer. In a real implementation, you would integrate 
-                        with a PDF.js viewer or similar library to display the actual PDF content. 
-                        Users can select text here to quote in their chat messages.
-                      </p>
-                      <p className="text-sm leading-relaxed">
-                        The selected text would be highlighted and automatically added to the chat 
-                        input for referencing specific parts of the document during the conversation.
-                      </p>
+                      {selectedPaper ? (
+                        <>
+                          <h3 className="text-lg font-semibold">{selectedPaper.title[language] || selectedPaper.title.en}</h3>
+                          <div className="text-sm text-gray-600 mb-4">
+                            <p><strong>{language === 'en' ? 'Authors:' : 'نویسندگان:'}</strong> {selectedPaper.authors.join(', ')}</p>
+                            <p><strong>{language === 'en' ? 'Journal:' : 'ژورنال:'}</strong> {selectedPaper.journal}</p>
+                            <p><strong>{language === 'en' ? 'Year:' : 'سال:'}</strong> {selectedPaper.year}</p>
+                          </div>
+                          <div className="text-sm leading-relaxed">
+                            <h4 className="font-medium mb-2">{language === 'en' ? 'Abstract:' : 'چکیده:'}</h4>
+                            <p className={language === 'fa' ? 'farsi' : ''}>{selectedPaper.abstract[language] || selectedPaper.abstract.en}</p>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <h3 className="text-lg font-semibold">Sample PDF Content</h3>
+                          <p className="text-sm leading-relaxed">
+                            This is a mock PDF viewer. In a real implementation, you would integrate 
+                            with a PDF.js viewer or similar library to display the actual PDF content. 
+                            Users can select text here to quote in their chat messages.
+                          </p>
+                          <p className="text-sm leading-relaxed">
+                            The selected text would be highlighted and automatically added to the chat 
+                            input for referencing specific parts of the document during the conversation.
+                          </p>
+                        </>
+                      )}
                     </div>
                   </div>
                 </CardContent>
