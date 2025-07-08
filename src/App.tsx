@@ -15,6 +15,7 @@ import LiteratureReviewPage from "./pages/LiteratureReviewPage";
 import SettingsPage from "./pages/SettingsPage";
 import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
+import ChatWithPDFPage from "./pages/ChatWithPDFPage";
 import RequireAuth from "./components/RequireAuth";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,11 @@ const App = () => (
               <Route path="/" element={<Layout />}>
                 <Route index element={<Index />} />
                 <Route path="papers/:id" element={<PaperDetail />} />
+                <Route path="chat-pdf" element={
+                  <RequireAuth>
+                    <ChatWithPDFPage />
+                  </RequireAuth>
+                } />
                 <Route path="libraries" element={
                   <RequireAuth>
                     <LibrariesPage />
