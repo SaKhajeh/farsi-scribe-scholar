@@ -27,13 +27,13 @@ const SearchPage: React.FC = () => {
     hasFullText: false
   });
   
-  const handleSearch = async (query: string) => {
+  const handleSearch = async (query: string, searchLanguage?: 'en' | 'fa' | 'both') => {
     if (!query.trim()) return;
     
     setIsSearching(true);
     setHasSearched(true);
     try {
-      const results = await searchPapers(query, language);
+      const results = await searchPapers(query, language, searchLanguage || 'both');
       setSearchResults(results.papers);
     } catch (error) {
       console.error('Error searching papers:', error);

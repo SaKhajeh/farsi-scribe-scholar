@@ -81,14 +81,34 @@ const mockLibraries: Library[] = [
 export const searchPapers = async (
   query: string, 
   language: Language,
+  searchLanguage: 'en' | 'fa' | 'both' = 'both',
   page: number = 1
 ): Promise<SearchResult> => {
   // In a real app, this would call an API
-  // For now, we'll filter our mock data based on the query
+  // For now, we'll filter our mock data based on the query and language preference
   
   const results = mockPapers.filter(paper => {
-    const searchField = language === 'en' ? paper.title.en : paper.title.fa;
-    return searchField.toLowerCase().includes(query.toLowerCase());
+    // Filter by search language preference
+    let languageMatch = true;
+    if (searchLanguage !== 'both') {
+      // For simplicity, we'll check if the paper has content in the desired language
+      // In a real app, papers would have a language field
+      const hasEnglishContent = paper.title.en && paper.abstract.en;
+      const hasFarsiContent = paper.title.fa && paper.abstract.fa;
+      
+      if (searchLanguage === 'en' && !hasEnglishContent) languageMatch = false;
+      if (searchLanguage === 'fa' && !hasFarsiContent) languageMatch = false;
+    }
+    
+    if (!languageMatch) return false;
+    
+    // Search in both title and abstract based on UI language
+    const titleField = language === 'en' ? paper.title.en : paper.title.fa;
+    const abstractField = language === 'en' ? paper.abstract.en : paper.abstract.fa;
+    
+    const queryLower = query.toLowerCase();
+    return titleField.toLowerCase().includes(queryLower) || 
+           abstractField.toLowerCase().includes(queryLower);
   });
 
   return {

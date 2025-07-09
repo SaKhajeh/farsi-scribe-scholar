@@ -21,7 +21,8 @@ export default {
 		extend: {
 			fontFamily: {
 				serif: ['Georgia', 'serif'],
-				sans: ['Inter', 'sans-serif'],
+				sans: ['Inter', 'system-ui', 'sans-serif'],
+				farsi: ['Vazirmatn', 'Noto Sans Arabic', 'IRANSans', 'Tahoma', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -67,12 +68,15 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				research: {
-					primary: '#1a365d',
-					secondary: '#2c5282',
-					accent: '#319795',
-					light: '#f7fafc',
-					dark: '#2d3748',
+				academic: {
+					primary: 'hsl(var(--academic-primary))',
+					secondary: 'hsl(var(--academic-secondary))',
+					muted: 'hsl(var(--academic-muted))',
+					border: 'hsl(var(--academic-border))',
+				},
+				language: {
+					active: 'hsl(var(--language-active))',
+					inactive: 'hsl(var(--language-inactive))',
 				}
 			},
 			borderRadius: {
